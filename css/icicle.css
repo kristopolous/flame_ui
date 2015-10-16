@@ -77,3 +77,9 @@ div.svPopout {
 	letter-spacing: 0.3em;
 	white-space: nowrap;
 }
+#legend-panel { 
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  background: white;
+}

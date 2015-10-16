@@ -181,14 +181,15 @@ function svDetailClose()
 
 function svRenderLegend()
 {
-	var content = "<b>Container Colors</b>:";
+  $("#legend-panel .panel-heading").html("Container Colors");
+	var content = [];
 
 	for (cName in cNames) {
 		var col = svColorMono(cName);
-		content += '<br><text style="color:' + col + '">' + ' ' + cName + '</text>';
+		content.push('<text style="color:' + col + '">' + ' ' + cName + '</text>');
 	}	
 
-	svLegend.html(content);
+	svLegend.html(content.join('<br>'));
 }
 
 function svRenderTrList(tree)
