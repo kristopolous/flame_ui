@@ -3,6 +3,7 @@
  */
 
 /* Configuration */
+var Tpl = {};
 var svSvgWidth = null;		/* image width (null to auto-compute) */
 var svSvgHeight = null;		/* image height (null to auto-compute) */
 var svAxisLabelWidth = 45;	/* width of axis labels */
@@ -749,3 +750,11 @@ function convertHsvToRgb(h, s, v)
 	return ([ Math.round(r * 255),
 	    Math.round(g * 255), Math.round(b * 255) ]);
 }
+
+$(function(){
+  // load the templates
+  $("#template > script").each(function(){
+    var id = this.id.split('-').pop();
+    Tpl[id] = _.template(this.innerHTML);
+  });
+});
