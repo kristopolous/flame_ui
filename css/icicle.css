@@ -84,4 +84,6 @@ div.svPopout {
   background: white;
 }
 
-#template { display: none }
+#template { 
+  display: none 
+}

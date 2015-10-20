@@ -48,11 +48,15 @@
     </div><!-- /.container -->
 
     <div id='template'>
-      <script id='tpl-panelselect'>
+      <script id='tpl-panelSelect' type='text/template'>
+        <h5><%= node %> <span class="label label-default"><%= tree[""].ch[node].n %> calls</span></h5>
         <ul class="nav nav-pills" role="tablist">
-          <li role="presentation" class="active"><a href="#">Home <span class="badge">42</span></a></li>
-          <li role="presentation"><a href="#">Profile</a></li>
-          <li role="presentation"><a href="#">Messages <span class="badge">3</span></a></li>
+          <% _.each(item_list, function(item){ %>
+            <li role="presentation"><a 
+              onclick="svSwitchData('<%= node %>','<%= item[0].toLowerCase() %>',this)"><%= item[0] %> Time<span class="badge">
+              <%= fmtTimeInterval((item[1])[""].ch[node].tt, 3, 1).output %></span></a>
+            </li>
+          <% }) %>
         </ul>
       </script>
     </div>

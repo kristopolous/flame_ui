@@ -196,25 +196,32 @@ function svRenderLegend()
 function svRenderTrList(tree)
 {
 	var res;
-	var content = "<b>Transactions</b>:";
+  svTrList.html('<h3>Transactions</h3>');
 
 	for (node in tree[""].ch) {
-		content += '<br>&nbsp;&nbsp;<b>' + node + '</b> - ' + 
-			tree[""].ch[node].n + ' calls -' + 
-			' <a href="javascript:svSwitchData(\'' + node + '\', \'avg\')">Avg Time</a>: ' + fmtTimeInterval(AvgData[""].ch[node].tt, 3, 1).output +
-			' <a href="javascript:svSwitchData(\'' + node + '\', \'min\')">Min Time</a>: ' + fmtTimeInterval(MinData[""].ch[node].tt, 3, 1).output +
-			' <a href="javascript:svSwitchData(\'' + node + '\', \'max\')">Max Time</a>: ' + fmtTimeInterval(MaxData[""].ch[node].tt, 3, 1).output;
+    console.log(AvgData[""], MinData[""], MaxData[""], tree[""].ch[node].n);
+    $(Tpl.panelSelect({
+      tree: tree,
+      node: node,
+      item_list: [
+        [ 'Avg', AvgData ],
+        [ 'Min', MinData ],
+        [ 'Max', MaxData ]
+      ]
+    })).appendTo(svTrList);
+
 		if (!res) {
 			res = node;
 		}
 	}
 
-	svTrList.html(content);
 	return res;
 }
 
-function svSwitchData(trName, which)
+function svSwitchData(trName, which, node)
 {
+  self.n = node;
+  $(node.parentNode).addClass('active').siblings().removeClass('active');
 //	delete svFlameGraph;
 	var data = AvgData;
 	var opStr;
