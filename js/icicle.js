@@ -37,12 +37,16 @@ var svContext = {
 	'mouseout': function () {
 		svTooltipBox.text('').style('opacity', null);
 	},
+  'mousemove': function() {
+    console.log(this, arguments);
+  },
 	'mouseover': function (d, det) {
-		var text, left, top, opts = {};
+		var text, left, top, opts = {warning: false};
 		var span_name = det['label'];
 
 		/* escape the key */
 		text = '<strong>' + span_name + ') </strong>';
+    opts.title = span_name;
     opts.details = [
       ['Container Name', d.data.value.cont],
       ['Command Line', d.data.value.exe],
@@ -52,9 +56,9 @@ var svContext = {
 
 		var nconc = d.data.value.nconc;
 		if (nconc) {
-      opts.warning = 'NOTE: this node has ' + nconc + ' childs. Only the slowest one is shown.';
-		}
-
+      opts.warning = 'NOTE: this node has ' + nconc + ' childs. Only the slowest one is shown.'; 
+    }
+  
 		svDetails.html(Tpl.details(opts) );
 	}
 };
@@ -90,11 +94,11 @@ function svInit()
 	d3.select('#svChartTitle').html('<h2> ' + svLastTransaction + ' Avg</h2>');
 		
 	svFlameGraph = new FlameGraph(d3.select('#chart'), tdata,
-	    svSvgWidth, svSvgHeight, svContext, {
-	        'coloring': svColorMode,
-		'growDown': svGrowDown,
-		'axisLabels': true
-	    });
+    svSvgWidth, svSvgHeight, svContext, {
+      'coloring': svColorMode,
+      'growDown': svGrowDown,
+      'axisLabels': true
+    });
 
 	svRenderLegend();
 }
@@ -253,11 +257,11 @@ function svSwitchData(trName, which, node)
 	tdata = createSubTree(data, trName);
 	
 	svFlameGraph = new FlameGraph(d3.select('#chart'), tdata,
-	    svSvgWidth, svSvgHeight, svContext, {
-	        'coloring': svColorMode,
-		'growDown': svGrowDown,
-		'axisLabels': true
-	    });		
+    svSvgWidth, svSvgHeight, svContext, {
+      'coloring': svColorMode,
+      'growDown': svGrowDown,
+      'axisLabels': true
+    });		
 
 	svRenderLegend();
 }
@@ -318,10 +322,10 @@ function svDetailOpen(d)
 		svPopoutBox.html('');
 		/* jsl:ignore */
 		new FlameGraph(svPopoutBox, svMakeSubgraphData(d), null, null,
-		    svContext, {
-			'coloring': svColorMode,
-			'growDown': svGrowDown
-		    });
+		  svContext, {
+        'coloring': svColorMode,
+        'growDown': svGrowDown
+		  });
 		/* jsl:end */
 		svPopoutBox.style('z-index', 1);
 		svPopoutBox.style('opacity', 1);
@@ -356,10 +360,11 @@ function FlameGraph(node, rawdata, pwidth, pheight, context, options)
 	this.fg_depthsamples = [];
 	this.computeDepth(rawdata, 0);
 
-	if (options.axisLabels)
+	if (options.axisLabels) {
 		axiswidth = this.fg_axiswidth = svAxisLabelWidth;
-	else
+  } else {
 		axiswidth = this.fg_axiswidth = 0;
+  }
 
 	this.fg_svgwidth = pwidth !== null ? pwidth :
 	    parseInt(node.style('width'), 10);
@@ -422,15 +427,17 @@ function FlameGraph(node, rawdata, pwidth, pheight, context, options)
 		return (Math.max(0, fg.fg_rectwidth(d) - svTextPaddingRight));
 	};
 	this.fg_x = function (d) {
-	    return (fg.fg_xscale(d.x) + fg.fg_axiswidth); };
+	    return (fg.fg_xscale(d.x) + fg.fg_axiswidth); 
+  };
 
-	if (options.growDown)
+	if (options.growDown) {
 		this.fg_y =
 		    function (d) { return (fg.fg_yscale(d.y)); };
-	else
+  } else {
 		this.fg_y = function (d) {
 		    return (chartheight - fg.fg_yscale(d.y));
 		};
+  }
 
 	data = this.fg_part(d3.entries(rawdata)[0]);
 	this.fg_rects = this.fg_svg.selectAll('rect').data(data).

@@ -72,6 +72,7 @@
 
     <div id='template'>
       <script id='tpl-details' type='text/template'>
+        <h4><%= title %></h4>
         <table class="table">
           <% _.each(details, function(row) { %>
             <tr>
@@ -79,7 +80,7 @@
             </tr>
           <% }); %>
         </table>
-        <% if (typeof "warning" !== "undefined") { %>
+        <% if (warning) { %>
           <p><strong><%= warning %></strong></p>
         <% } %>
       </script>
