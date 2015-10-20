@@ -113,10 +113,10 @@ function svFillData(tree)
 		rem = tree[key].t;
 		if (rem > 0) {
 			tree[key].ch[''] = {
-			    'svSynthetic': true,
-			    't': rem,
-			    'svTotal': rem,
-			    'ch': {}
+        svSynthetic: true,
+        t: rem,
+        svTotal: rem,
+        ch: {}
 			};
 		}
 	}
@@ -137,11 +137,11 @@ function fmtTimeInterval(value, decimals, step) {
     var multiplier = 1;
     var i;
     for (i = 0; i < units.length; i++) {
-        if (absValue < multiplier * step * multipliers[i]) {
-            break;
-        } else if (i < units.length - 1) {
-            multiplier = multiplier * multipliers[i];
-        }
+      if (absValue < multiplier * step * multipliers[i]) {
+        break;
+      } else if (i < units.length - 1) {
+        multiplier = multiplier * multipliers[i];
+      }
     }
     i = (i < units.length ? i : units.length - 1);
 
@@ -149,9 +149,9 @@ function fmtTimeInterval(value, decimals, step) {
     var unit = units[i];
 
     return {
-        value: convertedValue,
-        unit: unit,
-        output: convertedValue + ' ' + unit
+      value: convertedValue,
+      unit: unit,
+      output: convertedValue + ' ' + unit
     };
 }
 
@@ -165,9 +165,9 @@ function svColorMono(cname)
 	var sratio;
 
 	if (cNames[cname] === undefined) {
-	    cNames[cname] = colors(lastcolor);
-	    lastcolor++;
-    }
+    cNames[cname] = colors(lastcolor);
+    lastcolor++;
+  }
 	
 	return cNames[cname];
 }
@@ -202,7 +202,6 @@ function svRenderTrList(tree)
   svTrList.html('');
 
 	for (node in tree[""].ch) {
-    console.log(AvgData[""], MinData[""], MaxData[""], tree[""].ch[node].n);
     $(Tpl.panelSelect({
       tree: tree,
       node: node,
@@ -306,9 +305,9 @@ function svMakeSubgraphData(d)
 		oldtree = tree;
 		tree = {};
 		tree[d.parent.data.key] = {
-		    't': d.parent.data.value.t,
-		    'svTotal': d.parent.data.value.svTotal,
-		    'ch': oldtree
+      't': d.parent.data.value.t,
+      'svTotal': d.parent.data.value.svTotal,
+      'ch': oldtree
 		};
 		d = d.parent;
 	}
@@ -366,16 +365,13 @@ function FlameGraph(node, rawdata, pwidth, pheight, context, options)
 		axiswidth = this.fg_axiswidth = 0;
   }
 
-	this.fg_svgwidth = pwidth !== null ? pwidth :
-	    parseInt(node.style('width'), 10);
+	this.fg_svgwidth = pwidth !== null ? pwidth : parseInt(node.style('width'), 10);
 	this.fg_svgheight = pheight !== null ? pheight : 25 * this.fg_maxdepth;
 	this.fg_chartwidth = this.fg_svgwidth - axiswidth;
 	chartheight = this.fg_chartheight = this.fg_svgheight - axiswidth;
 
-	this.fg_xscale =
-	    d3.scale.linear().range([0, this.fg_chartwidth]);
-	this.fg_yscale =
-	    d3.scale.linear().range([0, this.fg_chartheight]);
+	this.fg_xscale = d3.scale.linear().range([0, this.fg_chartwidth]);
+	this.fg_yscale = d3.scale.linear().range([0, this.fg_chartheight]);
 
 	this.fg_svg = node.append('svg:svg');
 	this.fg_svg.attr('width', this.fg_svgwidth);
@@ -392,8 +388,7 @@ function FlameGraph(node, rawdata, pwidth, pheight, context, options)
 
 	/* Configure the partition layout. */
 	this.fg_part = d3.layout.partition();
-	this.fg_part.children(
-	    function (d) { return (d3.entries(d.value.ch)); });
+	this.fg_part.children(function (d) { return (d3.entries(d.value.ch)); });
 	this.fg_part.value(function (d) { return (d.value.svTotal); });
 	this.fg_part.sort(function (d1, d2) {
 		return (d1.data.key.localeCompare(d2.data.key));
@@ -405,80 +400,87 @@ function FlameGraph(node, rawdata, pwidth, pheight, context, options)
 		this.fg_color = function (d) { return (scale(d.data.key)); };
 	} else {
 		this.fg_color = function (d) {
-			if (d.data.value.svSynthetic)
+			if (d.data.value.svSynthetic) {
 				return ('#ffffff');
+      }
 
-		    return (svColorMono(d.data.value.cont));
+		  return (svColorMono(d.data.value.cont));
 		};
 	}
 
 	/* Configure the actual D3 components. */
 	nodeid = this.fg_nodeid = function (d) {
 		return (encodeURIComponent([
-		    d.data.key,
-		    fg.fg_yscale(d.y),
-		    fg.fg_xscale(d.x) ].join('@')));
+      d.data.key,
+      fg.fg_yscale(d.y),
+      fg.fg_xscale(d.x) ].join('@'))
+    );
 	};
+
 	this.fg_rectwidth = function (d) { return (fg.fg_xscale(d.dx)); };
 	this.fg_height = function (d) {
-	    return (fg.fg_yscale(d.dy));
+	  return (fg.fg_yscale(d.dy));
 	};
+
 	this.fg_textwidth = function (d) {
 		return (Math.max(0, fg.fg_rectwidth(d) - svTextPaddingRight));
 	};
 	this.fg_x = function (d) {
-	    return (fg.fg_xscale(d.x) + fg.fg_axiswidth); 
+	  return (fg.fg_xscale(d.x) + fg.fg_axiswidth); 
   };
 
 	if (options.growDown) {
-		this.fg_y =
-		    function (d) { return (fg.fg_yscale(d.y)); };
+		this.fg_y = function (d) { 
+      return (fg.fg_yscale(d.y)); 
+    };
   } else {
 		this.fg_y = function (d) {
-		    return (chartheight - fg.fg_yscale(d.y));
+	    return (chartheight - fg.fg_yscale(d.y));
 		};
   }
 
 	data = this.fg_part(d3.entries(rawdata)[0]);
 	this.fg_rects = this.fg_svg.selectAll('rect').data(data).
-	    enter().append('svg:rect').
-	    attr('class', function (d) {
-		return (d.data.value.svSynthetic ?  'svBoxSynthetic' : 'svBox');
-	    }).
-	    attr('x', this.fg_x).
-	    attr('y', this.fg_y).
-	    attr('rx', svCornerPixels).
-	    attr('ry', svCornerPixels).
-	    attr('height', this.fg_height).
-	    attr('width', this.fg_rectwidth).
-	    attr('fill', this.fg_color).
-	    on('click', this.showLogs.bind(this)).
-	    on('dblclick', this.detailOpen.bind(this)).
-	    on('mouseover', this.mouseover.bind(this)).
-	    on('mouseout', this.mouseout.bind(this));
+    enter().append('svg:rect').
+    attr('class', function (d) {
+		  return (d.data.value.svSynthetic ?  'svBoxSynthetic' : 'svBox');
+    }).
+    attr('x', this.fg_x).
+    attr('y', this.fg_y).
+    attr('rx', svCornerPixels).
+    attr('ry', svCornerPixels).
+    attr('height', this.fg_height).
+    attr('width', this.fg_rectwidth).
+    attr('fill', this.fg_color).
+    on('click', this.showLogs.bind(this)).
+    on('dblclick', this.detailOpen.bind(this)).
+    on('mouseover', this.mouseover.bind(this)).
+    on('mouseout', this.mouseout.bind(this));
+
 	this.fg_clips = this.fg_svg.selectAll('clipPath').data(data).
-	    enter().append('svg:clipPath').
-	    attr('id', nodeid).
-	    append('svg:rect').
-	    attr('x', this.fg_x).
-	    attr('y', this.fg_y).
-	    attr('width', this.fg_textwidth).
-	    attr('height', this.fg_height);
+    enter().append('svg:clipPath').
+    attr('id', nodeid).
+    append('svg:rect').
+    attr('x', this.fg_x).
+    attr('y', this.fg_y).
+    attr('width', this.fg_textwidth).
+    attr('height', this.fg_height);
+
 	this.fg_text = this.fg_svg.selectAll('text').data(data).
-	    enter().append('text').
-	    attr('class', 'svBoxLabel').
-	    attr('x', this.fg_x).
-	    attr('y', this.fg_y).
-	    attr('dx', svTextPaddingLeft).
-	    attr('dy', svTextPaddingTop). // 12
-	    attr('clip-path', function (d) {
-		return ('url("#' + nodeid(d) + '")');
-	    }).
-	    on('click', this.showLogs.bind(this)).
-	    on('dblclick', this.detailOpen.bind(this)).
-	    on('mouseover', this.mouseover.bind(this)).
-	    on('mouseout', this.mouseout.bind(this)).
-	    text(function (d) { return svCreateBarLabel(d); });
+    enter().append('text').
+    attr('class', 'svBoxLabel').
+    attr('x', this.fg_x).
+    attr('y', this.fg_y).
+    attr('dx', svTextPaddingLeft).
+    attr('dy', svTextPaddingTop). // 12
+    attr('clip-path', function (d) {
+		  return ('url("#' + nodeid(d) + '")');
+    }).
+    on('click', this.showLogs.bind(this)).
+    on('dblclick', this.detailOpen.bind(this)).
+    on('mouseover', this.mouseover.bind(this)).
+    on('mouseout', this.mouseout.bind(this)).
+    text(function (d) { return svCreateBarLabel(d); });
 
 	if (options.axisLabels) {
 		axis = this.fg_svg.append('text');
@@ -509,25 +511,29 @@ FlameGraph.prototype.computeDepth = function (tree, depth)
 {
 	var key, rem;
 
-	if (depth > this.fg_maxdepth)
+	if (depth > this.fg_maxdepth) {
 		this.fg_maxdepth = depth;
+  }
 
-	if (depth >= this.fg_depthsamples.length)
+	if (depth >= this.fg_depthsamples.length) {
 		this.fg_depthsamples[depth] = 0;
+  }
 
 	for (key in tree) {
-		if (tree[key].t > this.fg_maxunique)
+		if (tree[key].t > this.fg_maxunique) {
 			this.fg_maxunique = tree[key].t;
+    }
+
 		this.fg_depthsamples[depth] += tree[key].svTotal;
 		this.computeDepth(tree[key].ch, depth + 1);
 
 		rem = tree[key].t;
 		if (rem > 0 && tree[key].ch[''] === undefined) {
 			tree[key].ch[''] = {
-			    'svSynthetic': true,
-			    't': rem,
-			    'svTotal': rem,
-			    'ch': {}
+        'svSynthetic': true,
+        't': rem,
+        'svTotal': rem,
+        'ch': {}
 			};
 		}
 	}
@@ -535,8 +541,9 @@ FlameGraph.prototype.computeDepth = function (tree, depth)
 
 FlameGraph.prototype.detailClose = function ()
 {
-	if (this.fg_context !== null)
+	if (this.fg_context !== null) {
 		this.fg_context.detailClose();
+  }
 };
 
 function svChildLogsVisibility(show)
@@ -548,16 +555,16 @@ function svChildLogsVisibility(show)
 function svAddChildLogs(loglist, dk, dv, retnow)
 {
     if (dv.logs !== undefined) {
-        for (var j = 0; j < dv.logs.length; j++) {
-            dv.logs[j].k = dk;
-            dv.logs[j].d = dv;
-        }
+      for (var j = 0; j < dv.logs.length; j++) {
+        dv.logs[j].k = dk;
+        dv.logs[j].d = dv;
+      }
 
-        Array.prototype.push.apply(loglist, dv.logs);
+      Array.prototype.push.apply(loglist, dv.logs);
     }
 
     if (retnow === true) {
-        return;
+      return;
     }
 
 	var childs = dv.ch;
@@ -577,11 +584,11 @@ function svShowLogs(d)
 	} else {
 		svAddChildLogs(loglist, d.data.key, d.data.value);
 		loglist.sort(function (a, b) {
-		    if (a.th === b.th) {
-		        return a.tl - b.tl;
-		    } else {
-		        return a.th - b.th;
-		    }
+      if (a.th === b.th) {
+        return a.tl - b.tl;
+      } else {
+        return a.th - b.th;
+      }
 		});
 	}
 		
@@ -590,9 +597,9 @@ function svShowLogs(d)
 			var logLine = loglist[j].b.toLowerCase();
 			var col;
 			
-		    //
-		    // Determine the log text color
-            //
+		  //
+		  // Determine the log text color
+      //
 			if (logLine.indexOf("err") > -1) {
 				col = '#ff0000';
 			} else if (logLine.indexOf("warn") > -1) {
@@ -601,15 +608,15 @@ function svShowLogs(d)
 				col = '#000000';
 			}
 			
-		    //
-		    // Determine the container color
-            //
+		  //
+		  // Determine the container color
+      //
 			var cName = loglist[j].d.cont;
 			var contCol = svColorMono(cName);
 
 			content += '<br>' +
-                '<text style="color:' + contCol + '"> ' + cName + '</text> ' +
-                '<text style="color:' + col + '"> (' + loglist[j].k + ') ' + loglist[j].t + ' ' + loglist[j].b + '</text>';
+        '<text style="color:' + contCol + '"> ' + cName + '</text> ' +
+        '<text style="color:' + col + '"> (' + loglist[j].k + ') ' + loglist[j].t + ' ' + loglist[j].b + '</text>';
 		}
 	}
 
@@ -625,14 +632,16 @@ FlameGraph.prototype.showLogs = function (d)
 
 FlameGraph.prototype.detailOpen = function (d)
 {
-	if (!d.data.value.svSynthetic && this.fg_context !== null)
+	if (!d.data.value.svSynthetic && this.fg_context !== null) {
 		this.fg_context.detailOpen(d);
+  }
 };
 
 FlameGraph.prototype.mouseover = function (d)
 {
-	if (d.data.value.svSynthetic || this.fg_context === null)
+	if (d.data.value.svSynthetic || this.fg_context === null) {
 		return;
+  }
 
 	var nsamples, nunique;
 	var pctSamples, pctUnique;
@@ -646,14 +655,14 @@ FlameGraph.prototype.mouseover = function (d)
 	pctUnique = (100 * nunique / this.fg_depthsamples[0]).toFixed(1);
 
 	detail = {
-	    'label': d.data.key,
-	    'nsamples': d.data.value.svTotal,
-	    'nunique': d.data.value.t,
-	    'nallsamples': this.fg_depthsamples[0],
-	    'pctSamples': pctSamples,
-	    'pctUnique': pctUnique,
-	    'x': d3.event.pageX,
-	    'y': d3.event.pageY
+    'label': d.data.key,
+    'nsamples': d.data.value.svTotal,
+    'nunique': d.data.value.t,
+    'nallsamples': this.fg_depthsamples[0],
+    'pctSamples': pctSamples,
+    'pctUnique': pctUnique,
+    'x': d3.event.pageX,
+    'y': d3.event.pageY
 	};
 
 	this.fg_hoverto = setTimeout(function () {
@@ -664,10 +673,13 @@ FlameGraph.prototype.mouseover = function (d)
 
 FlameGraph.prototype.mouseout = function (d)
 {
-	if (this.fg_hoverto)
+	if (this.fg_hoverto) {
 		clearTimeout(this.fg_hoverto);
-	if (this.fg_context !== null)
+  }
+
+	if (this.fg_context !== null) {
 		this.fg_context.mouseout(d);
+  }
 };
 
 FlameGraph.prototype.zoomSet = function (cd)
@@ -680,19 +692,21 @@ FlameGraph.prototype.zoomSet = function (cd)
 	};
 	this.fg_textwidth = function (d) {
 		return (Math.max(0,
-		    fg.fg_xscale(d.x + d.dx) -
-		    fg.fg_xscale(d.x) - svTextPaddingRight));
+      fg.fg_xscale(d.x + d.dx) -
+      fg.fg_xscale(d.x) - svTextPaddingRight));
 	};
-	this.fg_rects.transition().duration(svTransitionTime).
-	    attr('x', this.fg_x).
-	    attr('width', this.fg_rectwidth);
-	this.fg_clips.transition().duration(svTransitionTime).
-	    attr('x', this.fg_x).
-	    attr('width', this.fg_textwidth);
-	this.fg_text.transition().duration(svTransitionTime).
-	    attr('x', this.fg_x);
-};
 
+	this.fg_rects.transition().duration(svTransitionTime).
+	  attr('x', this.fg_x).
+	  attr('width', this.fg_rectwidth);
+
+	this.fg_clips.transition().duration(svTransitionTime).
+	  attr('x', this.fg_x).
+	  attr('width', this.fg_textwidth);
+
+	this.fg_text.transition().duration(svTransitionTime).
+    attr('x', this.fg_x);
+}
 
 /*
  * This function is copied directly from lib/color.js.  It would be better if we
@@ -761,7 +775,7 @@ function convertHsvToRgb(h, s, v)
 	}
 
 	return ([ Math.round(r * 255),
-	    Math.round(g * 255), Math.round(b * 255) ]);
+    Math.round(g * 255), Math.round(b * 255) ]);
 }
 
 $(function(){
