@@ -196,7 +196,7 @@ function svRenderLegend()
 function svRenderTrList(tree)
 {
 	var res;
-  svTrList.html('<h3>Transactions</h3>');
+  svTrList.html('');
 
 	for (node in tree[""].ch) {
     console.log(AvgData[""], MinData[""], MaxData[""], tree[""].ch[node].n);
