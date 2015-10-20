@@ -38,25 +38,24 @@ var svContext = {
 		svTooltipBox.text('').style('opacity', null);
 	},
 	'mouseover': function (d, det) {
-		var text, left, top;
+		var text, left, top, opts = {};
 		var span_name = det['label'];
 
 		/* escape the key */
 		text = '<strong>' + span_name + ') </strong>';
-		text += '<strong>Container Name</strong>: ' +
-		    d.data.value.cont + ' ';
-		text += '<strong>Command Line</strong>: ' +
-		    d.data.value.exe + ' ';
-		text += '<strong>Time in this node and childs</strong>: ' +
-		    fmtTimeInterval(d.data.value.tt, 3, 1).output + ' ';
-		text += '<strong>Time in this node</strong>: ' +
-		    fmtTimeInterval(d.data.value.t, 3, 1).output;
+    opts.details = [
+      ['Container Name', d.data.value.cont],
+      ['Command Line', d.data.value.exe],
+      ['Time in this node and childs', fmtTimeInterval(d.data.value.tt, 3, 1).output],
+      ['Time in this node', fmtTimeInterval(d.data.value.t, 3, 1).output]
+    ];
+
 		var nconc = d.data.value.nconc;
 		if (nconc) {
-			text += '<br><strong>NOTE: this node has ' + nconc + ' childs. Only the slowest one is shown.</strong>';
+      opts.warning = 'NOTE: this node has ' + nconc + ' childs. Only the slowest one is shown.';
 		}
 
-		svDetails.html(text);
+		svDetails.html(Tpl.details(opts) );
 	}
 };
 

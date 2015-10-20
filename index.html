@@ -40,13 +40,6 @@
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li role="separator" class="divider"></li>
-                <li><a href="#">Separated link</a></li>
-                <li role="separator" class="divider"></li>
-                <li><a href="#">One more separated link</a></li>
               </ul>
             </li>
           </ul>
@@ -78,6 +71,19 @@
     </div><!-- /.container -->
 
     <div id='template'>
+      <script id='tpl-details' type='text/template'>
+        <table class="table">
+          <% _.each(details, function(row) { %>
+            <tr>
+              <td><strong><%= row[0] %></strong></td><td><%= row[1] %></td>
+            </tr>
+          <% }); %>
+        </table>
+        <% if (typeof "warning" !== "undefined") { %>
+          <p><strong><%= warning %></strong></p>
+        <% } %>
+      </script>
+
       <script id='tpl-panelSelect' type='text/template'>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= node %> <span class="label label-default"><%= tree[""].ch[node].n %> calls
