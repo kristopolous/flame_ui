@@ -35,17 +35,18 @@ var svContext = {
 	'detailClose': svDetailClose,
 	'detailOpen': svDetailOpen,
 	'mouseout': function () {
+    this.tip.hide();
 		svTooltipBox.text('').style('opacity', null);
 	},
   'mousemove': function() {
     console.log(this, arguments);
   },
 	'mouseover': function (d, det) {
+    this.tip.show();
 		var text, left, top, opts = {warning: false};
 		var span_name = det['label'];
 
 		/* escape the key */
-		text = '<strong>' + span_name + ') </strong>';
     opts.title = span_name;
     opts.details = [
       ['Container Name', d.data.value.cont],
@@ -438,12 +439,18 @@ function FlameGraph(node, rawdata, pwidth, pheight, context, options)
 	    return (chartheight - fg.fg_yscale(d.y));
 		};
   }
+  this.tip = d3.tip()
+    .attr('class', 'd3-tip')
+    .offset([-10, 0])
+    .html(function(d) {
+      return svCreateBarLabel(d);
+    })
 
 	data = this.fg_part(d3.entries(rawdata)[0]);
 	this.fg_rects = this.fg_svg.selectAll('rect').data(data).
     enter().append('svg:rect').
     attr('class', function (d) {
-		  return (d.data.value.svSynthetic ?  'svBoxSynthetic' : 'svBox');
+		  return (d.data.value.svSynthetic ? 'svBoxSynthetic' : 'svBox');
     }).
     attr('x', this.fg_x).
     attr('y', this.fg_y).
@@ -480,8 +487,15 @@ function FlameGraph(node, rawdata, pwidth, pheight, context, options)
     on('dblclick', this.detailOpen.bind(this)).
     on('mouseover', this.mouseover.bind(this)).
     on('mouseout', this.mouseout.bind(this)).
-    text(function (d) { return svCreateBarLabel(d); });
+    text(function (d) { return ">" + svCreateBarLabel(d); });
 
+    /*
+    on('mouseover', function(d){
+      var 
+        nodeSelection = d3.select(this).style({opacity:'0.8'});
+        nodeSelection.select("text").style({opacity:'1.0'});
+    })
+    */
 	if (options.axisLabels) {
 		axis = this.fg_svg.append('text');
 		axis.attr('class', 'svYAxisLabel');
